@@ -1,8 +1,8 @@
 ﻿using Newtonsoft.Json;
 using System.Security.Cryptography;
 using System.Text;
-namespace BinanceFuturesAccount
 
+namespace BinanceFuturesAccount
 {
     class Program
     {
@@ -107,8 +107,8 @@ namespace BinanceFuturesAccount
         {
             var balance = await GetAccountInfo();
             Console.WriteLine(balance);
-            string symbol = "SKLUSDT";
-            string side = "SELL";
+            string symbol = "SKLUSDT"; //Name of Futures
+            string side = "SELL"; //Side BUY/SELL
             string type = "MARKET";
             string quantity = "180";
             await BuySell(symbol, side, type, quantity);

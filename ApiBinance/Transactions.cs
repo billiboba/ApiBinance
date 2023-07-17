@@ -1,16 +1,12 @@
 ﻿using Newtonsoft.Json;
-using System.Security.Cryptography;
+using Newtonsoft.Json.Linq;
+using System.Net;
 using System.Text;
-namespace BinanceFuturesAccount
 
+namespace ApiBinance
 {
-    class Program
+    public class Transaction : BaseInfo
     {
-        public const string apiKey = "Your_Api";
-        public const string secretKey = "Your_key";
-        public const string baseUrl = "https://fapi.binance.com";
-
-
         public class FuturesAccountInfo
         {
             [JsonProperty("assets")]
@@ -24,21 +20,39 @@ namespace BinanceFuturesAccount
 
             [JsonProperty("availableBalance")]
             public double AvailableBalance { get; init; }
-        }
-        private static string CalculateSignature(string secretKey, string payload)
-        {
-            var encoding = new UTF8Encoding();
-            byte[] keyBytes = encoding.GetBytes(secretKey);
-            byte[] payloadBytes = encoding.GetBytes(payload);
+            [JsonProperty("symbol")]
+            public string symbol { get; init; }
+            [JsonProperty("positionAmt")]
+            public decimal PositionAmt { get; init; }
 
-            using (var hmacSha256 = new HMACSHA256(keyBytes))
+            [JsonProperty("entryPrice")]
+            public decimal EntryPrice { get; init; }
+
+        }
+        public static async Task GetOpenPositionFutures()
+        {
+            long timestamp = (long)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalMilliseconds;
+            string queryString = $"timestamp={timestamp}";
+            string signature = CalculateSignature(secretKey, queryString);
+            string endpoint = "/fapi/v2/positionRisk";
+            string url = $"{baseUrl}{endpoint}?{queryString}&signature={signature}";
+            HttpClient client = new HttpClient();
+            client.DefaultRequestHeaders.Add("X-MBX-APIKEY", apiKey);
+            HttpResponseMessage response = await client.GetAsync(url);
+            string responseBody = await response.Content.ReadAsStringAsync();
+            List<FuturesAssetBalance> positions = JsonConvert.DeserializeObject<List<FuturesAssetBalance>>(responseBody);
+            List<object> Open = new List<object>();
+            foreach (FuturesAssetBalance position in positions)
             {
-                byte[] signatureBytes = hmacSha256.ComputeHash(payloadBytes);
-                return BitConverter.ToString(signatureBytes).Replace("-", "").ToLower();
+                if (position.EntryPrice != 0)
+                {
+                    
+                    Console.WriteLine($"Символ: {position.symbol}, Позиция: {position.PositionAmt}, Средняя цена: {position.EntryPrice}" ); 
+                }
             }
         }
 
-        public static async Task<double> GetAccountInfo()
+        public static async Task<double> GetAccountInfo() //Get info account Binance
         {
             long timestamp = (long)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalMilliseconds;
             string queryString = $"timestamp={timestamp}";
@@ -100,18 +114,8 @@ namespace BinanceFuturesAccount
 
             // Получение ответа
             var content = await response.Content.ReadAsStringAsync();
-            Console.WriteLine(content);
+            //Console.WriteLine(content);
         }
-
-        public static async Task Main()
-        {
-            var balance = await GetAccountInfo();
-            Console.WriteLine(balance);
-            string symbol = "SKLUSDT";
-            string side = "SELL";
-            string type = "MARKET";
-            string quantity = "180";
-            await BuySell(symbol, side, type, quantity);
-        }
+        
     }
 }

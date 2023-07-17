@@ -116,6 +116,16 @@ namespace ApiBinance
             var content = await response.Content.ReadAsStringAsync();
             //Console.WriteLine(content);
         }
-        
+
+        public static async Task Main()
+        {
+            var balance = await GetAccountInfo();
+            Console.WriteLine(balance);
+            string symbol = "SKLUSDT";
+            string side = "SELL";
+            string type = "MARKET";
+            string quantity = "180";
+            await BuySell(symbol, side, type, quantity);
+        }
     }
 }

@@ -1,26 +1,19 @@
 ﻿using ApiBinance;
-namespace BinanceFuturesAccount
+using Newtonsoft.Json;
+using static ApiBinance.WebBinance;
 
+namespace BinanceFuturesAccount
 {
-    public class Program : Transaction
-    { 
+    public class Program 
+    {
         public static async Task Main()
         {
-            var balance = await GetAccountInfo();
-            Console.WriteLine(balance);
-
             while (true)
             {
-            string symbol = Console.ReadLine();
-            string side = Console.ReadLine();
-            string type = Console.ReadLine();
-            string quantity = Console.ReadLine();
-            await BuySell(symbol, side, type, quantity);
-            
-                await GetOpenPositionFutures();
-                Thread.Sleep(1000);
+                await WebBinance.GetOpenPositionFutures();
+                Thread.Sleep(10000);
             }
-            
+
         }
     }
 }

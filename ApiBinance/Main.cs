@@ -8,10 +8,15 @@ namespace BinanceFuturesAccount
     {
         public static async Task Main()
         {
+            
             while (true)
             {
-                await WebBinance.GetOpenPositionFutures();
-                Thread.Sleep(10000);
+                Dictionary<string, double> open = await WebBinance.GetOpenPositionFutures();
+                foreach(var pos in open)
+                {
+                    Console.WriteLine(pos.Key + pos.Value);
+                }
+                Thread.Sleep(1000);
             }
 
         }

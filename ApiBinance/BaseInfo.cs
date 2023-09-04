@@ -11,8 +11,8 @@ namespace ApiBinance
 {
     public class BaseInfo
     {
-        public const string apiKey = "rliDHXxaUTOpmEwQYXdrSjL62UJd99kZUT8sjVyCEyvdjdKdV0amLZrk2DXnCHi0";
-        public const string secretKey = "BcsuSLarF6F9IUj7fKgJ6HfROFcFRmPjLxweFWAbMAZaTNW1afS9O5vcxkiFUAuy";
+        public const string apiKey = "****";
+        public const string secretKey = "****";
         public const string baseUrl = "https://fapi.binance.com";
         public const string urlPosition = "https://api.binance.com/api/v3/account";
         public const string time = "GTC";

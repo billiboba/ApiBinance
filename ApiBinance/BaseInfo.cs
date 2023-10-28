@@ -11,12 +11,16 @@ namespace ApiBinance
 {
     public class BaseInfo
     {
+        //For Main Account
         public const string apiKey = "****";
         public const string secretKey = "****";
         public const string baseUrl = "https://fapi.binance.com";
         public const string urlPosition = "https://api.binance.com/api/v3/account";
         public const string time = "GTC";
-                
+        //For Test Account
+        public const string TESTapiKey = "****";
+        public const string TESTsecretKey = "****";
+        public const string TESTBASEURL = "https://testnet.binancefuture.com";
         public static string CalculateSignature(string secretKey, string payload)
         {
             var encoding = new UTF8Encoding();

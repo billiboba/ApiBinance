@@ -5,16 +5,7 @@ namespace ApiBinance
 {
     public class Transaction
     {
-        static string CreateQueryString(Dictionary<string, string> parameters)
-        {
-            var stringBuilder = new StringBuilder();
-            foreach (var parameter in parameters)
-            {
-                stringBuilder.Append($"{parameter.Key}={parameter.Value}&");
-            }
-            var queryString = stringBuilder.ToString().TrimEnd('&');
-            return queryString;
-        }
+        
         public static async Task BuySell(string symbol, string side, string type, string quantity)
         {
             long timestamp = (long)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalMilliseconds;
@@ -27,7 +18,7 @@ namespace ApiBinance
             { "quantity", quantity },  // Quantity to buy or sell
             { "timestamp", timestamp.ToString() },  // Current timestamp
             };
-            var payload = CreateQueryString(parameters);
+            var payload = BaseInfo.CreateQueryString(parameters);
             var signature = BaseInfo.CalculateSignature(BaseInfo.secretKey, payload);
 
             // Добавление подписи и ключа API в заголовок запроса
@@ -57,7 +48,7 @@ namespace ApiBinance
             {"price",stopprice },
             { "timestamp", timestamp.ToString() },  // Current timestamp
             };
-            var payload = CreateQueryString(parameters);
+            var payload = BaseInfo.CreateQueryString(parameters);
             var signature = BaseInfo.CalculateSignature(BaseInfo.secretKey, payload);
             Console.WriteLine(payload);
             // Добавление подписи и ключа API в заголовок запроса
@@ -87,7 +78,7 @@ namespace ApiBinance
             {"stopPrice",stopprice },
             { "timestamp", timestamp.ToString() },  // Current timestamp
             };
-            var payload = CreateQueryString(parameters);
+            var payload = BaseInfo.CreateQueryString(parameters);
             var signature = BaseInfo.CalculateSignature(BaseInfo.secretKey, payload);
             // Добавление подписи и ключа API в заголовок запроса
             var requestUri = $"{endpoint}?{payload}&signature={signature}";
@@ -101,7 +92,5 @@ namespace ApiBinance
             var content = await response.Content.ReadAsStringAsync();
             Console.WriteLine(content);
         }
-
-       
     }
 }

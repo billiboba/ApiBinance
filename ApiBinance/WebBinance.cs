@@ -91,5 +91,26 @@ namespace ApiBinance
                 Console.WriteLine(position.symbol + position.realizedPnl);
             }
         }
+
+        public static async Task<double> GetLiquid(string symbol)
+        {
+            const string interval = "1d";
+            const string count = "1";
+            var client = new HttpClient();
+            var url = $"https://fapi.binance.com/fapi/v1/klines?symbol={symbol}&interval={interval}&limit={count}";
+            var response = await client.GetAsync(url);
+            var responseData = await response.Content.ReadAsStringAsync();
+            var klines = JsonConvert.DeserializeObject<decimal[][]>(responseData);
+            double volume;
+            if (klines.Length > 0)
+            {
+                volume = (double)klines[klines.Length - 1][7];
+                if (volume > 50000000) //Если торгуемый дневной объём в день превышает 50 млн $, то мы получаем данные валюты.
+                {
+                    return volume;
+                }
+            }
+            return 0;
+        }
     }
 }

@@ -38,6 +38,9 @@ namespace ApiBinance
 
             [JsonProperty("realizedPnl")]
             public double realizedPnl { get; init; }
+
+            [JsonProperty("orderId")]
+            public double orderId { get; init; }
         }
     }
 }

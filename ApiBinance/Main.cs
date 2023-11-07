@@ -8,22 +8,31 @@ namespace BinanceFuturesAccount
     {
         public static async Task Main()
         {
-            //await Simulate_Trading.BuySell("BTCUSDT", "BUY", "MARKET", "0.01");
-            await Simulate_Trading.EmergencyClosedPosition("3501090195");
-            double test = await WebBinance.GetLiquid("BTCUSDT");
-            Console.WriteLine(test);
-            //await Simulate_Trading.PlaceBuyOrderStopMarket("BTCUSDT", "BUY", "MARKET", "0.01", "34600");
-            //while (true)
-            //{
-            //    Dictionary<string, double> open = await Simulate_Trading.TESTGetOpenPositionFutures();
-            //    foreach(var pos in open)
-            //    {
-            //       Console.WriteLine(pos.Key + pos.Value);
-            //    }
-            //    Thread.Sleep(1000);
-                
-            //}
+            double[] OrderId = await OpenPositionOrders.OpenPositionWithOrders();
 
+            int x;
+            while (true)
+            {
+                List<double> orderId = await Simulate_Trading.GetOpenOrders("BTCUSDT");
+                x = orderId.Count;
+                if(x < 2) {
+                
+                    if (orderId[0] == null)
+                    {
+                        await Simulate_Trading.CancelOrder("BTCUSDT", orderId[1]);
+                        orderId.Remove(1);
+                        x--;
+                    }
+                    else
+                    {
+                        await Simulate_Trading.CancelOrder("BTCUSDT", orderId[0]);
+                        orderId.Remove(0);
+                        x--;
+                    }
+                    break;
+                }
+                    Thread.Sleep(5000);
+            };
         }
     }
 }

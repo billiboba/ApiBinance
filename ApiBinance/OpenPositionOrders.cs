@@ -12,31 +12,51 @@ namespace ApiBinance
 
         public static async Task<double[]> OpenPositionWithOrders()
         {
-            //await Simulate_Trading.BuySell("BTCUSDT", "BUY", "MARKET", "0.04");
             var order = await Simulate_Trading.BuySell("BTCUSDT", "BUY", "MARKET", "0.04");
-            double[] results = new double[2];
             if (order == null)
             {
                 Console.WriteLine("poshel nahui");
+                return null;
             }
-            else
+
+            var tasks = new Task<double>[]
             {
-                //var boba = Task.WhenAll(Simulate_Trading.PlaceBuyOrderStopMarket("BTCUSDT", "SELL", "STOP_MARKET", "0.04", "34000"), Simulate_Trading.PlaceBuyOrderStopMarket2("BTCUSDT", "SELL", "TAKE_PROFIT_MARKET", "0.04", "36000"));
-                Task<double>[] tasks = new Task<double>[]
-                {
                     Simulate_Trading.PlaceBuyOrderStopMarket("BTCUSDT", "SELL", "STOP_MARKET", "0.04", "35000"),
-                    Simulate_Trading.PlaceBuyOrderStopMarket2("BTCUSDT", "SELL", "TAKE_PROFIT_MARKET", "0.04", "35200")
-                };
+                    Simulate_Trading.PlaceBuyOrderStopMarket2("BTCUSDT", "SELL", "TAKE_PROFIT_MARKET", "0.04", "36300")
+            };
+            var results = await Task.WhenAll(tasks);
+            return results;
+        }
 
-                await Task.WhenAll(tasks);
-
-                results = new double[tasks.Length];
-                for (int i = 0; i < tasks.Length; i++)
+        public static async Task OpenPos()
+        {
+            while (true)
+            {
+                await OpenPositionOrders.OpenPositionWithOrders();
+                int x;
+                while (true)
                 {
-                    results[i] = tasks[i].Result;
+                    List<double> orderId = await Simulate_Trading.GetOpenOrders("BTCUSDT");
+                    x = orderId.Count;
+                    if (x < 2)
+                    {
+                        if (orderId[0] == null)
+                        {
+                            await Simulate_Trading.CancelOrder("BTCUSDT", orderId[1]);
+                            orderId.Remove(1);
+                            //x--;
+                        }
+                        else
+                        {
+                            await Simulate_Trading.CancelOrder("BTCUSDT", orderId[0]);
+                            orderId.Remove(0);
+                            //x--;
+                        }
+                        break;
+                    }
+                    Thread.Sleep(5000);
                 }
             }
-            return results;
         }
     }
 }

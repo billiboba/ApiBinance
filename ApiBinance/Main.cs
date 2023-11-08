@@ -4,35 +4,37 @@ using static ApiBinance.WebBinance;
 
 namespace BinanceFuturesAccount
 {
-    public class Program 
+    public class Program
     {
         public static async Task Main()
         {
-            double[] OrderId = await OpenPositionOrders.OpenPositionWithOrders();
-
-            int x;
             while (true)
             {
-                List<double> orderId = await Simulate_Trading.GetOpenOrders("BTCUSDT");
-                x = orderId.Count;
-                if(x < 2) {
-                
-                    if (orderId[0] == null)
-                    {
-                        await Simulate_Trading.CancelOrder("BTCUSDT", orderId[1]);
-                        orderId.Remove(1);
-                        x--;
-                    }
-                    else
-                    {
-                        await Simulate_Trading.CancelOrder("BTCUSDT", orderId[0]);
-                        orderId.Remove(0);
-                        x--;
-                    }
-                    break;
+                List<string> boba = await Simulate_Trading.TESTGetOpenPositionFutures();
+                for(int i = 0; i < boba.Count; i++)
+                {
+                    Console.WriteLine(boba[i]);
                 }
-                    Thread.Sleep(5000);
+                if (boba.Count != 0)
+                {
+                    for (int i = 0; i < boba.Count; i++)
+                    {
+                        if (boba[i] != null)
+                        {
+                            continue;
+                        }
+                        else
+                        {
+                            await OpenPositionOrders.OpenPos();
+                        }
+                    }
+                }
+                else
+                {
+                    await OpenPositionOrders.OpenPos();
+                }
+                Thread.Sleep(5000);
             };
         }
     }
-}
+}//Open positions! 

@@ -1,4 +1,5 @@
 ﻿using Nancy;
+using Nancy.Responses;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -37,7 +38,7 @@ namespace ApiBinance
                 throw new Exception("Ошибка запроса");
             }
         }
-        public static async Task<Dictionary<string, double>> TESTGetOpenPositionFutures() //Информация о сделке(Профит по сделке)//Переделать, скорее всего нужно, чтобы данные выводились в массив.
+        public static async Task<List<string>> TESTGetOpenPositionFutures() //Информация о сделке(Профит по сделке)//Переделать, скорее всего нужно, чтобы данные выводились в массив.
         {
             long timestamp = (long)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalMilliseconds;
             string queryString = $"timestamp={timestamp}";
@@ -50,20 +51,18 @@ namespace ApiBinance
 
             HttpResponseMessage response = await client.GetAsync(url);
             string responseBody = await response.Content.ReadAsStringAsync();
-            List<Models.FuturesAssetBalance> positions = JsonConvert.DeserializeObject<List<Models.FuturesAssetBalance>>(responseBody);
-            var test = new Dictionary<string, double>();
-            foreach (Models.FuturesAssetBalance position in positions)
+            List<Models.FuturesAssetBalance> orderResponse = JsonConvert.DeserializeObject<List<Models.FuturesAssetBalance>>(responseBody);
+            //Console.WriteLine(jsonResponse);
+            List<string> opens = new List<string>();
+            foreach (var test in orderResponse)
             {
-                if (position.EntryPrice != 0)
+                if (test.EntryPrice != 0)
                 {
-                    test.Add(position.symbol, position.unRealizedProfit);
+                    opens.Add(test.symbol);
                 }
             }
-            foreach (var open in test)
-            {
-                Console.WriteLine(open.Key + ": " + open.Value);
-            }
-            return test;
+            
+            return opens;
         }
         public static async Task<double> BuySell(string symbol, string side, string type, string quantity)
         {
@@ -185,7 +184,7 @@ namespace ApiBinance
         }
         public static async Task<List<double>> GetOpenOrders(string symbol)
         {
-            string baseUrl = "https://testnet.binancefuture.com";
+            
             string endpoint = "/fapi/v1/openOrders";
             long timestamp = DateTimeOffset.Now.ToUnixTimeMilliseconds();
             string queryString = $"timestamp={timestamp}";
@@ -205,7 +204,7 @@ namespace ApiBinance
             {
                 opens.Add(test.orderId);
             }
-            Console.WriteLine(orderResponse.Count);
+            Console.WriteLine(jsonResponse);
             return opens;
         
 

@@ -59,6 +59,7 @@ namespace ApiBinance
                 if (test.EntryPrice != 0)
                 {
                     opens.Add(test.symbol);
+                    Console.WriteLine(opens.Count);
                 }
             }
             
@@ -180,7 +181,7 @@ namespace ApiBinance
 
             // Получение ответа
             var content = await response.Content.ReadAsStringAsync();
-            Console.WriteLine(content);
+            //Console.WriteLine(content);
         }
         public static async Task<List<double>> GetOpenOrders(string symbol)
         {
@@ -204,7 +205,7 @@ namespace ApiBinance
             {
                 opens.Add(test.orderId);
             }
-            Console.WriteLine(jsonResponse);
+            //Console.WriteLine(jsonResponse);
             return opens;
         
 

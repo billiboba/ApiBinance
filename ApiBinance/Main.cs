@@ -13,10 +13,9 @@ namespace BinanceFuturesAccount
                 List<string> symbols = new List<string>() { "BTCUSDT", "ETHUSDT", "MKRUSDT" };
                 for(int i = 0; i < symbols.Count; i++)
                 {
-                    Console.WriteLine(symbols[i]);
                     await OpenPositionOrders.CheckOpenPos(symbols[i]);
                 }
-                
+                Thread.Sleep(5000);
             }
         }
     }

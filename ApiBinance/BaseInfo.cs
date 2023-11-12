@@ -25,8 +25,8 @@ namespace ApiBinance
         public const string urlPosition = "https://api.binance.com/api/v3/account";
         public const string time = "GTC";
         //For Test Account
-        public const string TESTapiKey = "32029817002256cb96f68ac1444e27583c36cf83277fa21a70ea43c5155cf6f1";
-        public const string TESTsecretKey = "6e35f4e31c8266eb4820906fc3c1a82432db0a42a4ed7c03d662b167e23c5a05";
+        public const string TESTapiKey = "***";
+        public const string TESTsecretKey = "***";
         public const string TESTBASEURL = "https://testnet.binancefuture.com";
         public static string CalculateSignature(string secretKey, string payload)
         {

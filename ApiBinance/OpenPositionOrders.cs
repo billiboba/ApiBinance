@@ -8,12 +8,10 @@ namespace ApiBinance
 {
     class OpenPositionOrders
     {
-        //TAKE_PROFIT_MARKET если цена достигает указанной выше цены.
-
         public static async Task<double[]> OpenPositionWithOrders()
         {
-            var order = await Simulate_Trading.BuySell("BTCUSDT", "BUY", "MARKET", "0.04");
-            //var order = await Simulate_Trading.BuySell("ETHUSDT", "BUY", "MARKET", "0.5");
+            //var order = await Simulate_Trading.BuySell("BTCUSDT", "BUY", "MARKET", "0.04");
+            var order = await Simulate_Trading.BuySell("ETHUSDT", "BUY", "MARKET", "0.5");
             if (order == null)
             {
                 Console.WriteLine("poshel nahui");
@@ -22,41 +20,42 @@ namespace ApiBinance
 
             var tasks = new Task<double>[]
             {
-                    Simulate_Trading.PlaceBuyOrderStopMarket("BTCUSDT", "SELL", "STOP_MARKET", "0.04", "35000"),
-                    Simulate_Trading.PlaceBuyOrderStopMarket2("BTCUSDT", "SELL", "TAKE_PROFIT_MARKET", "0.04", "36300")
-                    //Simulate_Trading.PlaceBuyOrderStopMarket("ETHUSDT", "SELL", "STOP_MARKET", "0.5", "1600"),
-                    //Simulate_Trading.PlaceBuyOrderStopMarket2("ETHUSDT", "SELL", "TAKE_PROFIT_MARKET", "0.5", "2000")
+                    //Simulate_Trading.PlaceBuyOrderStopMarket("BTCUSDT", "SELL", "STOP_MARKET", "0.04", "37000"),
+                    //Simulate_Trading.PlaceBuyOrderStopMarket2("BTCUSDT", "SELL", "TAKE_PROFIT_MARKET", "0.04", "37200")
+                    Simulate_Trading.PlaceBuyOrderStopMarket("ETHUSDT", "SELL", "STOP_MARKET", "0.5", "2000"),
+                    Simulate_Trading.PlaceBuyOrderStopMarket2("ETHUSDT", "SELL", "TAKE_PROFIT_MARKET", "0.5", "2070")
             };
             var results = await Task.WhenAll(tasks);
             return results;
         }
 
-        public static async Task OpenPos()
+        public static async Task OpenPos(string symbol)
         {
-            while (true)
+            double[] check = await OpenPositionOrders.OpenPositionWithOrders();
+            if(check == null)
             {
-                await OpenPositionOrders.OpenPositionWithOrders();
-                int x;
+                return;
+            }
+            else
+            {
                 while (true)
                 {
-                    List<double> orderId = await Simulate_Trading.GetOpenOrders("BTCUSDT");
-                    //List<double> orderId = await Simulate_Trading.GetOpenOrders("ETHUSDT");
-                    x = orderId.Count;
-                    if (x < 2)
+                    List<double> orderId = await Simulate_Trading.GetOpenOrders(symbol);
+                    //List<long> orderId = await Simulate_Trading.GetOpenOrders(symbols);
+                    Console.WriteLine(symbol);
+                    if (orderId.Count < 2)
                     {
                         if (orderId[0] == null)
                         {
-                            await Simulate_Trading.CancelOrder("BTCUSDT", orderId[1]);
-                            //await Simulate_Trading.CancelOrder("ETHUSDT", orderId[1]);
+                            //await Simulate_Trading.CancelOrder(symbol, orderId[1]);
+                            await Simulate_Trading.CancelOrder(symbol, orderId[1]);
                             orderId.Remove(1);
-                            x--;
                         }
                         else
                         {
-                            await Simulate_Trading.CancelOrder("BTCUSDT", orderId[0]);
-                            //await Simulate_Trading.CancelOrder("ETHUSDT", orderId[0]);
+                            //await Simulate_Trading.CancelOrder(symbol, orderId[0]);
+                            await Simulate_Trading.CancelOrder(symbol, orderId[0]);
                             orderId.Remove(0);
-                            x--;
                         }
                         break;
                     }
@@ -65,46 +64,17 @@ namespace ApiBinance
             }
         }
 
-        public static async Task CheckOpenPos(string symbols)
+        public static async Task CheckOpenPos(string symbol)
         {
-            while (true)
+            List<string> openPositions = await Simulate_Trading.TESTGetOpenPositionFutures();
+            if (openPositions.Contains(symbol))
             {
-                List<string> boba = await Simulate_Trading.TESTGetOpenPositionFutures();
-                if (boba.Count != 0)
-                {
-                    //foreach (string s in boba)
-                    //{
-                    //    if (symbols.Contains(s))
-                    //    {
-                    //        //continue;
-                    //        Console.WriteLine("sosi");
-                    //    }
-                    //    else
-                    //    {
-                    //        await OpenPositionOrders.OpenPos();
-                    //    }
-                    //}
-                    if (boba.Contains(symbols))
-                    {
-                        continue;
-                        Console.WriteLine("sosi");
-                        Console.WriteLine("asd" + boba.Count);
-                    }
-                    else
-                    {
-                        await OpenPositionOrders.OpenPos();
-                    }
-                }
-                else
-                {
-                    await OpenPositionOrders.OpenPos();
-                }
-                //await OpenPositionOrders.OpenPos();
-
-
-
-                Thread.Sleep(5000);
-            };
+                Console.WriteLine("sosi bibu");
+            }
+            else
+            {
+                await OpenPositionOrders.OpenPos(symbol);
+            }
         }
     }
 }

@@ -10,12 +10,12 @@ using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 using static ApiBinance.WebBinance;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace ApiBinance
 {
     class Simulate_Trading
     {
-        public const string side2 = "BUY";
         public static async Task<double> TESTGetAccountBalance() //Get info account Binance
         {
             long timestamp = (long)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalMilliseconds;
@@ -52,14 +52,12 @@ namespace ApiBinance
             HttpResponseMessage response = await client.GetAsync(url);
             string responseBody = await response.Content.ReadAsStringAsync();
             List<Models.FuturesAssetBalance> orderResponse = JsonConvert.DeserializeObject<List<Models.FuturesAssetBalance>>(responseBody);
-            //Console.WriteLine(jsonResponse);
             List<string> opens = new List<string>();
             foreach (var test in orderResponse)
             {
                 if (test.EntryPrice != 0)
                 {
                     opens.Add(test.symbol);
-                    Console.WriteLine(opens.Count);
                 }
             }
             
@@ -92,7 +90,7 @@ namespace ApiBinance
             var content = await response.Content.ReadAsStringAsync();
             var orderResponse = JsonConvert.DeserializeObject<Models.FuturesAssetBalance>(content);
             var order = orderResponse.orderId;
-            Console.WriteLine(order);
+            Console.WriteLine(orderResponse.symbol + "is Opened");
             Console.WriteLine(content);
             return order;
         }
@@ -185,29 +183,35 @@ namespace ApiBinance
         }
         public static async Task<List<double>> GetOpenOrders(string symbol)
         {
-            
             string endpoint = "/fapi/v1/openOrders";
-            long timestamp = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-            string queryString = $"timestamp={timestamp}";
-            string signature = BaseInfo.CalculateSignature(BaseInfo.TESTsecretKey, queryString);
-            string url = $"{BaseInfo.TESTBASEURL}{endpoint}?{queryString}&signature={signature}";
-            HttpClient client = new HttpClient();
+            long timestamp = (long)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalMilliseconds;
+            var parameters = new Dictionary<string, string>
+        {
+            { "symbol", symbol },  // Symbol of the futures contract
+            { "timestamp", timestamp.ToString() },  // Current timestamp
+            
+            };
+            var payload = BaseInfo.CreateQueryString(parameters);
+            var signature = BaseInfo.CalculateSignature(BaseInfo.TESTsecretKey, payload);
 
+            // Добавление подписи и ключа API в заголовок запроса
+            var requestUri = $"{BaseInfo.TESTBASEURL}{endpoint}?{payload}&signature={signature}";
+            var client = new HttpClient();
             client.DefaultRequestHeaders.Add("X-MBX-APIKEY", BaseInfo.TESTapiKey);
 
-            HttpResponseMessage response = await client.GetAsync(url);
+            HttpResponseMessage response = await client.GetAsync(requestUri);
             string jsonResponse = await response.Content.ReadAsStringAsync();
-            
+
             List<Models.FuturesAssetBalance> orderResponse = JsonConvert.DeserializeObject<List<Models.FuturesAssetBalance>>(jsonResponse);
             //Console.WriteLine(jsonResponse);
             List<double> opens = new List<double>();
-            foreach(var test in orderResponse)
+            foreach (var test in orderResponse)
             {
                 opens.Add(test.orderId);
+                Console.WriteLine(test.orderId);
             }
-            //Console.WriteLine(jsonResponse);
             return opens;
-        
+
 
         }
     }

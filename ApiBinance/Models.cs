@@ -28,7 +28,7 @@ namespace ApiBinance
             public decimal PositionAmt { get; init; }
 
             [JsonProperty("entryPrice")]
-            public decimal EntryPrice { get; init; }
+            public double EntryPrice { get; init; }
 
             [JsonProperty("unRealizedProfit")]
             public double unRealizedProfit { get; init; }
@@ -41,6 +41,12 @@ namespace ApiBinance
 
             [JsonProperty("orderId")]
             public double orderId { get; init; }
+
+            [JsonProperty("lastPrice")]
+            public double lastPrice { get; init; }
+
+            [JsonProperty("quoteVolume")]
+            public double quoteVolume { get; init; }
         }
     }
 }

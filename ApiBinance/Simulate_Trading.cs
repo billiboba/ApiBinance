@@ -63,7 +63,7 @@ namespace ApiBinance
             
             return opens;
         }
-        public static async Task<double> BuySell(string symbol, string side, string type, string quantity)
+        public static async Task<double> BuySell(string symbol, string side, string type, double quantity)
         {
             long timestamp = (long)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalMilliseconds;
             string endpointPath = "/fapi/v1/order";
@@ -72,29 +72,25 @@ namespace ApiBinance
             { "symbol", symbol },  // Symbol of the futures contract
             { "side", side },        // SIDE: BUY or SELL
             { "type", type },     // TYPE: MARKET, LIMIT, STOP_MARKET etc.
-            { "quantity", quantity },  // Quantity to buy or sell
+            { "quantity", quantity.ToString().Replace(",",".") },  // Quantity to buy or sell
             { "timestamp", timestamp.ToString() },  // Current timestamp
             };
             var payload = BaseInfo.CreateQueryString(parameters);
             var signature = BaseInfo.CalculateSignature(BaseInfo.TESTsecretKey, payload);
 
-            // Добавление подписи и ключа API в заголовок запроса
             var requestUri = $"{BaseInfo.TESTBASEURL}{endpointPath}?{payload}&signature={signature}";
             var client = new HttpClient();
             client.DefaultRequestHeaders.Add("X-MBX-APIKEY", BaseInfo.TESTapiKey);
 
-            // Отправка POST запроса
             var response = await client.PostAsync(requestUri, null);
-
-            // Получение ответа
             var content = await response.Content.ReadAsStringAsync();
             var orderResponse = JsonConvert.DeserializeObject<Models.FuturesAssetBalance>(content);
             var order = orderResponse.orderId;
-            Console.WriteLine(orderResponse.symbol + "is Opened");
             Console.WriteLine(content);
+            Console.WriteLine(orderResponse.symbol + "is Opened");
             return order;
         }
-        public static async Task<double> PlaceBuyOrderStopMarket(string symbol, string side, string type, string quantity, string stopprice) //При достижении цены в 7100 активируется заявка на покупку по рыночной цене
+        public static async Task<double> PlaceBuyOrderStopMarket(string symbol, string side, string type, double quantity, double stopprice) //При достижении цены в 7100 активируется заявка на покупку по рыночной цене
         {
             string endpoint = "https://testnet.binancefuture.com/fapi/v1/order";
             long timestamp = (long)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalMilliseconds;
@@ -104,28 +100,25 @@ namespace ApiBinance
             { "side", side },        // SIDE: BUY or SELL
             { "type", type },     // TYPE: MARKET, LIMIT, STOP_MARKET etc.
             {"timeInForce", BaseInfo.time },
-            { "quantity", quantity },  // Quantity to buy or sell\
-            {"stopPrice",stopprice },
+            { "quantity", quantity.ToString().Replace(",",".") },  // Quantity to buy or sell\
+            {"stopPrice",stopprice.ToString().Replace(",",".") },
             { "timestamp", timestamp.ToString() },  // Current timestamp
             };
             var payload = BaseInfo.CreateQueryString(parameters);
             var signature = BaseInfo.CalculateSignature(BaseInfo.TESTsecretKey, payload);
-            // Добавление подписи и ключа API в заголовок запроса
             var requestUri = $"{endpoint}?{payload}&signature={signature}";
             var client = new HttpClient();
             client.DefaultRequestHeaders.Add("X-MBX-APIKEY", BaseInfo.TESTapiKey);
 
-            // Отправка POST запроса
             var response = await client.PostAsync(requestUri, null);
-
-            // Получение ответа
             var content = await response.Content.ReadAsStringAsync();
             var orderResponse = JsonConvert.DeserializeObject<Models.FuturesAssetBalance>(content);
             var order = orderResponse.orderId;
+            Console.WriteLine(content);
+            Console.WriteLine(order + " Open SL");
             return order;
-            //Console.WriteLine(content);
         }
-        public static async Task<double> PlaceBuyOrderStopMarket2(string symbol, string side, string type, string quantity, string stopprice) //При достижении цены в 7100 активируется заявка на покупку по рыночной цене
+        public static async Task<double> PlaceBuyOrderStopMarket2(string symbol, string side, string type, double quantity, double stopprice) //При достижении цены в 7100 активируется заявка на покупку по рыночной цене
         {
             string endpoint = "https://testnet.binancefuture.com/fapi/v1/order";
             long timestamp = (long)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalMilliseconds;
@@ -135,26 +128,22 @@ namespace ApiBinance
             { "side", side },        // SIDE: BUY or SELL
             { "type", type },     // TYPE: MARKET, LIMIT, STOP_MARKET etc.
             {"timeInForce", BaseInfo.time },
-            { "quantity", quantity },  // Quantity to buy or sell\
-            {"stopPrice",stopprice },
+            { "quantity", quantity.ToString().Replace(",",".") },  // Quantity to buy or sell\
+            {"stopPrice",stopprice.ToString().Replace(",",".") },
             { "timestamp", timestamp.ToString() },  // Current timestamp
             };
             var payload = BaseInfo.CreateQueryString(parameters);
             var signature = BaseInfo.CalculateSignature(BaseInfo.TESTsecretKey, payload);
-            // Добавление подписи и ключа API в заголовок запроса
             var requestUri = $"{endpoint}?{payload}&signature={signature}";
             var client = new HttpClient();
             client.DefaultRequestHeaders.Add("X-MBX-APIKEY", BaseInfo.TESTapiKey);
-
-            // Отправка POST запроса
             var response = await client.PostAsync(requestUri, null);
-
-            // Получение ответа
             var content = await response.Content.ReadAsStringAsync();
             var orderResponse = JsonConvert.DeserializeObject<Models.FuturesAssetBalance>(content);
             var order = orderResponse.orderId;
+            Console.WriteLine(content);
+            Console.WriteLine(order + " Open TP");
             return order;
-            //Console.WriteLine(content);
         }
         public static async Task CancelOrder(string symbol, double orderId)
         {
@@ -168,33 +157,27 @@ namespace ApiBinance
             };
             var payload = BaseInfo.CreateQueryString(parameters);
             var signature = BaseInfo.CalculateSignature(BaseInfo.TESTsecretKey, payload);
-
-            // Добавление подписи и ключа API в заголовок запроса
             var requestUri = $"{BaseInfo.TESTBASEURL}{endpointPath}?{payload}&signature={signature}";
             var client = new HttpClient();
             client.DefaultRequestHeaders.Add("X-MBX-APIKEY", BaseInfo.TESTapiKey);
 
-            // Отправка POST запроса
             var response = await client.DeleteAsync(requestUri);
 
-            // Получение ответа
             var content = await response.Content.ReadAsStringAsync();
-            //Console.WriteLine(content);
+            Console.WriteLine("Order Cancel OK : " + symbol);
         }
         public static async Task<List<double>> GetOpenOrders(string symbol)
         {
             string endpoint = "/fapi/v1/openOrders";
             long timestamp = (long)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalMilliseconds;
             var parameters = new Dictionary<string, string>
-        {
-            { "symbol", symbol },  // Symbol of the futures contract
-            { "timestamp", timestamp.ToString() },  // Current timestamp
-            
+            {
+                {"symbol", symbol },
+                { "timestamp", timestamp.ToString() },  // Current timestamp
             };
             var payload = BaseInfo.CreateQueryString(parameters);
             var signature = BaseInfo.CalculateSignature(BaseInfo.TESTsecretKey, payload);
 
-            // Добавление подписи и ключа API в заголовок запроса
             var requestUri = $"{BaseInfo.TESTBASEURL}{endpoint}?{payload}&signature={signature}";
             var client = new HttpClient();
             client.DefaultRequestHeaders.Add("X-MBX-APIKEY", BaseInfo.TESTapiKey);
@@ -203,13 +186,12 @@ namespace ApiBinance
             string jsonResponse = await response.Content.ReadAsStringAsync();
 
             List<Models.FuturesAssetBalance> orderResponse = JsonConvert.DeserializeObject<List<Models.FuturesAssetBalance>>(jsonResponse);
-            //Console.WriteLine(jsonResponse);
             List<double> opens = new List<double>();
             foreach (var test in orderResponse)
             {
                 opens.Add(test.orderId);
-                Console.WriteLine(test.orderId);
             }
+            
             return opens;
 
 

@@ -13,7 +13,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace ApiBinance
+namespace ApiBinance.ApiBinance
 {
     public class WebBinance
     {
@@ -34,12 +34,12 @@ namespace ApiBinance
             var test = new Dictionary<string, double>();
             foreach (Models.FuturesAssetBalance position in positions)
             {
-                if(position.EntryPrice != 0)
+                if (position.EntryPrice != 0)
                 {
                     test.Add(position.symbol, position.unRealizedProfit);
                 }
             }
-            foreach(var open in test)
+            foreach (var open in test)
             {
                 Console.WriteLine(open.Key + ": " + open.Value);
             }
@@ -62,14 +62,14 @@ namespace ApiBinance
             List<Models.FuturesAssetBalance> positions = JsonConvert.DeserializeObject<List<Models.FuturesAssetBalance>>(responseBody);
             var test = new List<string>();
             foreach (Models.FuturesAssetBalance position in positions)
-            {                    
-                
-                test.Add(position.symbol);                
+            {
+
+                test.Add(position.symbol);
             }
             return test;
         }
         public static async Task<double> GetFuturesPrice(string symbol)
-        { 
+        {
             string endpoint = "/fapi/v1/ticker/24hr";
             long timestamp = (long)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalMilliseconds;
             var parameters = new Dictionary<string, string>
@@ -112,7 +112,7 @@ namespace ApiBinance
                 throw new Exception("Ошибка запроса");
             }
         }
-        
+
         public static async Task GetClosedPosition()
         {
             long timestamp = (long)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalMilliseconds;
@@ -122,7 +122,7 @@ namespace ApiBinance
             string endpoint = "/fapi/v1/userTrades";
             string queryString = $"&timestamp={timestamp}";
             string signature = BaseInfo.CalculateSignature(BaseInfo.secretKey, queryString);
-            string url = $"{baseUrl}{endpoint}?{queryString}&signature={signature}";   
+            string url = $"{baseUrl}{endpoint}?{queryString}&signature={signature}";
             Console.WriteLine(url);
             HttpClient client = new HttpClient();
             client.DefaultRequestHeaders.Add("X-MBX-APIKEY", BaseInfo.apiKey);
@@ -155,11 +155,11 @@ namespace ApiBinance
             var test = new List<string>();
             foreach (Models.FuturesAssetBalance position in positions)
             {
-                if(position.quoteVolume > 10000000)
+                if (position.quoteVolume > 10000000)
                 {
                     test.Add(position.symbol);
                 }
-                
+
             }
             return test;
         }

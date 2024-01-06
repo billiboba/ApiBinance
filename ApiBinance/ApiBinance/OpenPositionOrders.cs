@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ApiBinance
+namespace ApiBinance.ApiBinance
 {
     class OpenPositionOrders
     {
@@ -16,7 +16,7 @@ namespace ApiBinance
             double sl = price - price * 0.01; //Установка стоплосс
             double tp = price + price * 0.04; //Установка тейкпрофит
 
-            double sl_ = Math.Round(sl,2); //Установка стоплосс
+            double sl_ = Math.Round(sl, 2); //Установка стоплосс
             double tp_ = Math.Round(tp, 2);
             var order = await Simulate_Trading.BuySell(symbol, "BUY", "MARKET", quan);
             if (order == null)
@@ -54,7 +54,7 @@ namespace ApiBinance
             ////
             else
             {
-                double[] check = await OpenPositionOrders.OpenPositionWithOrders(symbol);
+                double[] check = await OpenPositionWithOrders(symbol);
                 if (check == null)
                 {
                     return;
@@ -77,8 +77,8 @@ namespace ApiBinance
                     }
                 }
             }
-            
-            
+
+
         }
 
         public static async Task CheckOpenPos(string symbol)
@@ -90,7 +90,7 @@ namespace ApiBinance
             }
             else
             {
-                await OpenPositionOrders.OpenPos(symbol);
+                await OpenPos(symbol);
             }
         }
 
@@ -98,7 +98,7 @@ namespace ApiBinance
         {
             double Balance = await WebBinance.GetAccountBalance();
             double price = await WebBinance.GetFuturesPrice(symbol);
-            double quantity = (Balance / 10) / price;
+            double quantity = Balance / 10 / price;
             double quan2 = Math.Round(quantity, 2);
             //Console.WriteLine(" symbol quantity: " + quan2);
             return quan2;

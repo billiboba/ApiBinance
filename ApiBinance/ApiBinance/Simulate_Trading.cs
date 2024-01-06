@@ -9,10 +9,10 @@ using System.Reflection.Metadata;
 using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
-using static ApiBinance.WebBinance;
+using static ApiBinance.ApiBinance.WebBinance;
 using static System.Net.Mime.MediaTypeNames;
 
-namespace ApiBinance
+namespace ApiBinance.ApiBinance
 {
     class Simulate_Trading
     {
@@ -60,7 +60,7 @@ namespace ApiBinance
                     opens.Add(test.symbol);
                 }
             }
-            
+
             return opens;
         }
         public static async Task<double> BuySell(string symbol, string side, string type, double quantity)
@@ -191,7 +191,7 @@ namespace ApiBinance
             {
                 opens.Add(test.orderId);
             }
-            
+
             return opens;
 
 

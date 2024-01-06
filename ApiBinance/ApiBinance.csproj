@@ -8,8 +8,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Bybit.Api" Version="1.2.6" />
+    <PackageReference Include="Bybit.Net" Version="3.2.6" />
+    <PackageReference Include="BybitApi" Version="1.0.5" />
     <PackageReference Include="Nancy" Version="2.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="RestSharp" Version="110.2.0" />
   </ItemGroup>
 
 </Project>

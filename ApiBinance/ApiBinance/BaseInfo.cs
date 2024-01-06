@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 //SHORT
 //Level + 10%*ATR = SL
 //Level - 40%*ATR = TP
-namespace ApiBinance
+namespace ApiBinance.ApiBinance
 {
     public class BaseInfo
     {

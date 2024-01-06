@@ -1,11 +1,11 @@
 ﻿using Newtonsoft.Json;
 using System.Text;
 
-namespace ApiBinance
+namespace ApiBinance.ApiBinance
 {
     public class Transaction
     {
-        
+
         public static async Task BuySell(string symbol, string side, string type, string quantity)
         {
             long timestamp = (long)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalMilliseconds;

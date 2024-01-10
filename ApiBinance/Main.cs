@@ -2,6 +2,7 @@
 using CryptoExchange.Net.Authentication;
 using Bybit.Net;
 using Bybit.Net.Objects;
+using Cryptocurrency.ApiByBit;
 namespace ApiBinance
 {
     public class Program
@@ -9,8 +10,15 @@ namespace ApiBinance
         public static async Task Main()
         {
             BybitAccount account = new BybitAccount();
-            account.PlaceOrder();
-            account.GetWalletBalance();
+            GetOrdersBybit.MarketPlaceOrder();
+            GetOrdersBybit.TakeProfitOrder();
+            //
+            //GetOrdersBybit.LimitPlaceOrder();
+            //GetOrdersBybit.CancelOrder();
+            //account.GetWalletBalance();
+            //GetOrdersBybit.GetOpenPositions();
+            //GetOrdersBybit.GetOpenOrdersBybit("SPELLUSDT");
+            //GetOrdersBybit.GetFuturesSimbolsBybit();
         }
     }
 }

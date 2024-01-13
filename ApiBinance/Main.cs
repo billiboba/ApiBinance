@@ -9,16 +9,18 @@ namespace ApiBinance
     {
         public static async Task Main()
         {
-            BybitAccount account = new BybitAccount();
-            GetOrdersBybit.MarketPlaceOrder();
-            GetOrdersBybit.TakeProfitOrder();
+            //GetOrdersBybit.GetHistoryCurrency();
+            //GetOrdersBybit.MarketPlaceOrder();
+            //GetOrdersBybit.TakeProfitOrder();
             //
             //GetOrdersBybit.LimitPlaceOrder();
             //GetOrdersBybit.CancelOrder();
             //account.GetWalletBalance();
-            //GetOrdersBybit.GetOpenPositions();
+            //GetOrdersBybit.GetOpenPositions("OPUSDT");
             //GetOrdersBybit.GetOpenOrdersBybit("SPELLUSDT");
-            //GetOrdersBybit.GetFuturesSimbolsBybit();
+            //double boba = GetOrdersBybit.GetVolatily("ETHUSDT");
+            //Console.WriteLine(boba);
+            GetOrdersBybit.GetClosedPositions();
         }
     }
 }

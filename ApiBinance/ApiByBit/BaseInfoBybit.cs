@@ -11,8 +11,8 @@ namespace Cryptocurrency.ApiByBit
     public class BaseInfoBybit
     {
         public const string BaseUrl = "https://api.bybit.com/";
-        public const string ApiKey = "***";
-        public const string ApiSecret = "***";
+        public const string ApiKey = "LSMPr0sfJqRJuMBHy9";
+        public const string ApiSecret = "5Ut2XJTXdxFY51LpGNeCbVaDWUl0AOZRGbrq";
         public static readonly string Timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString();
         public const string RecvWindow = "5000";
 
